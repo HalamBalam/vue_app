@@ -10,6 +10,22 @@
   </head>
 
   <body>
+    <% if staff_signed_in? %>
+      Welcome, <b><%= current_staff.email %></b> |
+      <%= link_to 'Log out', destroy_staff_session_path, method: :delete %>
+    <% elsif client_signed_in? %>
+      <%= link_to 'Log out', destroy_client_session_path, method: :delete %>
+    <% else %>
+      <div>
+        <%= link_to 'Staff Log in', new_staff_session_path %> |
+        <%= link_to 'Client Log in', new_client_session_path %>
+      </div>
+      <div>
+        <%= link_to 'New Staff', new_staff_registration_path %> |
+        <%= link_to 'New Client', new_client_registration_path %>
+      </div>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>
