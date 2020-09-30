@@ -19,6 +19,10 @@ const api = {
         }
       })
     }
+  },
+
+  items: {
+    index: () => axios.get('/items')
   }
 }
 
