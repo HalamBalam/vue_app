@@ -5,7 +5,7 @@
     template(v-else-if="error")
       p Error :-(
     template(v-else)
-      navbar(:user="currentStaff", :userSignedIn="currentStaff != ''")
+      navbar(:user="currentStaff || ''", :userSignedIn="!!currentStaff")
       dashboard
 </template>
 
@@ -16,10 +16,9 @@ import Dashboard from './components/dashboard/dashboard.vue'
 export default {
   data () {
     return {
-      items: [],
       loading: true,
       error: false,
-      currentStaff: ''
+      currentStaff: null
     }
   },
   created () {
@@ -31,11 +30,7 @@ export default {
 
       this.$api.currentStaff()
       .then(({ data }) => {
-        if (data == null) {
-          this.currentStaff = ''
-        } else {
-          this.currentStaff = data
-        }
+        this.currentStaff = data
       })
       .catch(() => (this.error = true))
       .finally(() => this.loading = false)
