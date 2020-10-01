@@ -10,7 +10,7 @@ const api = {
   clients: {
     index: () => axios.get('/clients'),
     create: (fullName, phone, email) => {
-      return axios.post('/create_client', {
+      return axios.post('/clients', {
         client: {
           full_name: fullName,
           phone: phone,
