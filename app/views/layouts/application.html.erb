@@ -6,26 +6,18 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= javascript_pack_tag 'hello_vue' %>
+    <%= javascript_pack_tag 'staff' %>
   </head>
 
   <body>
-    <% if staff_signed_in? %>
-      Welcome, <b><%= current_staff.email %></b> |
-      <%= link_to 'Log out', destroy_staff_session_path, method: :delete %>
-    <% elsif client_signed_in? %>
-      <%= link_to 'Log out', destroy_client_session_path, method: :delete %>
-    <% else %>
-      <div>
-        <%= link_to 'Staff Log in', new_staff_session_path %> |
-        <%= link_to 'Client Log in', new_client_session_path %>
-      </div>
-      <div>
-        <%= link_to 'New Staff', new_staff_registration_path %> |
-        <%= link_to 'New Client', new_client_registration_path %>
-      </div>
-    <% end %>
-
+    <div>
+      <% unless staff_signed_in? %>
+        <%= link_to 'Log in', new_staff_session_path %> |
+        <%= link_to 'New Staff', new_staff_registration_path %>
+      <% end %>
+    </div>
+    <div id="app">
+    </div>
     <%= yield %>
   </body>
 </html>
