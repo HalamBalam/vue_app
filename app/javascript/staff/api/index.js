@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
+import { Notify } from 'quasar'
 
 const api = {
 
@@ -15,7 +16,7 @@ const api = {
       if (organization_id == undefined) {
         return axios.get('/clients')
       } else {
-        return axios.get('/organizations/' + organization_id + '/clients')
+        return axios.get(`/organizations/${organization_id}/clients`)
       }
     },
     create: (fullName, phone, email) => {
@@ -29,7 +30,7 @@ const api = {
       })
     },
     update: (id, fullName, phone, email, organizations) => {
-      return axios.put('/clients/' + id, {
+      return axios.put(`/clients/${id}`, {
         client: {
           full_name: fullName,
           phone: phone,
@@ -38,7 +39,7 @@ const api = {
         }
       })
     },
-    delete: (id) => axios.delete('/clients/' + id)
+    delete: (id) => axios.delete(`/clients/${id}`)
   },
 
   organizations: {
@@ -46,7 +47,7 @@ const api = {
       if (client_id == undefined) {
         return axios.get('/organizations')
       } else {
-        return axios.get('/clients/' + client_id + '/organizations')
+        return axios.get(`/clients/${client_id}/organizations`)
       }
     },
     create: (name, type, inn, ogrn) => {
@@ -60,7 +61,7 @@ const api = {
       })
     },
     update: (id, name, type, inn, ogrn, clients) => {
-      return axios.put('/organizations/' + id, {
+      return axios.put(`/organizations/${id}`, {
         organization: {
           name: name,
           org_type: type,
@@ -70,8 +71,34 @@ const api = {
         }
       })
     },
-    delete: (id) => axios.delete('/organizations/' + id)
+    delete: (id) => axios.delete(`/organizations/${id}`)
   }
 }
+
+axios.interceptors.response.use(function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    if (response.config.method == 'post') {
+      Notify.create({
+        icon: 'done',
+        color: 'positive',
+        message: 'Created'
+      })
+    }
+
+    if (response.config.method == 'put') {
+      Notify.create({
+        icon: 'done',
+        color: 'positive',
+        message: 'Updated'
+      })
+    }
+
+    return response;
+  }, function (error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    return Promise.reject(error);
+  });
 
 Vue.prototype.$api = api

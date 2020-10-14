@@ -1,9 +1,9 @@
 <template lang="pug">
-  div(class="q-pa-md q-gutter-sm")
+  .q-pa-md.q-gutter-sm
     q-dialog(v-model="errors" :position="'top'")
       q-card(style="width: 350px")
         q-card-section(class="row items-center no-wrap")
-          div(class="text-weight-bold") {{ errorText }}
+          .text-weight-bold {{ errorText }}
 
     q-btn(color="primary" label="New" @click="newOrganization = true")
     q-dialog(v-model="newOrganization" persistent)
@@ -86,14 +86,7 @@ export default {
     createOrganization (name, type, inn, ogrn) {
       this.$api.organizations.create(name, type, inn, ogrn)
         .then((response) => {
-          if (response.status >= 200 && response.status < 300) {
-            this.$q.notify({
-              icon: 'done',
-              color: 'positive',
-              message: 'Created'
-            })
-            this.newOrganization = false
-          }
+          this.newOrganization = false
         })
         .catch((response) => {
           this.errors = true
@@ -105,15 +98,8 @@ export default {
     updateOrganization (name, type, inn, ogrn, clients) {
       this.$api.organizations.update(this.editOrganizationId, name, type, inn, ogrn, clients)
         .then((response) => {
-          if (response.status >= 200 && response.status < 300) {
-            this.$q.notify({
-              icon: 'done',
-              color: 'positive',
-              message: 'Updated'
-            })
-            this.editOrganization = false
-            this.selected = []
-          }
+          this.editOrganization = false
+          this.selected = []
         })
         .catch((response) => {
           this.errors = true
