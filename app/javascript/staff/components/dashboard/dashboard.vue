@@ -4,7 +4,13 @@
       q-scroll-area(class="fit")
         q-list
           template(v-for="(menuItem, index) in menuList")
-            q-item(:key="index" clickable :active="currentMenuItem === index" v-ripple @click="currentMenuItem = index")
+            q-item(
+              :key="index"
+              clickable
+              :active="currentMenuItem === index"
+              v-ripple
+              @click="currentMenuItem = index"
+            )
               q-item-section(avatar)
                 q-icon(:name="menuItem.icon")
               q-item-section {{ menuItem.label }}

@@ -1,46 +1,40 @@
-<template>
-  <q-card>
-    <div class="q-pa-md" style="max-width: 430px">
-      <form @submit.prevent.stop="onSubmit" @reset.prevent.stop="onReset" class="q-gutter-md">
-        <q-input
+<template lang="pug">
+  q-card
+    div(class="q-pa-md" style="max-width: 430px")
+      form(@submit.prevent.stop="onSubmit" @reset.prevent.stop="onReset" class="q-gutter-md")
+        q-input(
           ref="name"
           filled
           v-model="name"
           label="Name *"
           lazy-rules
-          :rules="[ 
-            val => val !== null && val !== '' || 'Please enter organization\'s name'
-          ]"
-        />
+          :rules="[ val => !!val || 'Please enter organization`s name' ]"
+        )
 
-        <q-radio v-model="type" val="LE" label="Legal Entity" />
-        <q-radio v-model="type" val="IE" label="Individual Entrepreneur" />
+        q-radio(v-model="type" val="LE" label="Legal Entity")
+        q-radio(v-model="type" val="IE" label="Individual Entrepreneur")
 
-        <q-input
+        q-input(
           ref="inn"
           filled
           v-model="inn"
           label="INN *"
           hint="Taxpayer identification number (LE - 10 ch., IE - 12 ch.)"
           lazy-rules
-          :rules="[
-            val => val && (this.type == 'LE' ? val.length == 10 : val.length == 12) || 'Please enter correct value'
-          ]"
-        />
+          :rules="[ val => !!val && (this.type == 'LE' ? val.length == 10 : val.length == 12) || 'Please enter correct value' ]"
+        )
 
-        <q-input
+        q-input(
           ref="ogrn"
           filled
           v-model="ogrn"
           label="OGRN *"
           hint="Main state registration number (13 ch.)"
           lazy-rules
-          :rules="[
-            val => val && val.length == 13 || 'Please enter correct value'
-          ]"
-        />
+          :rules="[ val => !!val && val.length == 13 || 'Please enter correct value' ]"
+        )
 
-        <q-table
+        q-table(
           title="Clients"
           :data="data"
           :columns="columns"
@@ -48,16 +42,12 @@
           :selected-rows-label="getSelectedString"
           selection="multiple"
           :selected.sync="selected"
-        />
+        )
 
-        <div>
-          <q-btn label="Update" type="submit" color="primary" />
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-          <q-btn label="Cancel" color="primary" flat class="q-ml-sm" v-close-popup />
-        </div>
-      </form>
-    </div>
-  </q-card>
+        div
+          q-btn(label="Update" type="submit" color="primary")
+          q-btn(label="Reset" type="reset" color="primary" flat class="q-ml-sm")
+          q-btn(label="Cancel" color="primary" flat class="q-ml-sm" v-close-popup)
 </template>
 
 <script>
@@ -133,7 +123,7 @@ export default {
         })
       })
     },
-
+    
      getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.data.length}`
     }

@@ -1,18 +1,18 @@
-<template>
-  <q-card>
-    <div class="q-pa-md" style="max-width: 330px">
-      <form @submit.prevent.stop="onSubmit" @reset.prevent.stop="onReset" class="q-gutter-md">
-        <q-input
+<template lang="pug">
+  q-card
+    div(class="q-pa-md" style="max-width: 330px")
+      form(@submit.prevent.stop="onSubmit" @reset.prevent.stop="onReset" class="q-gutter-md")
+        q-input(
           ref="fullName"
           filled
           v-model="fullName"
           label="Full name *"
           hint="Name and surname"
           lazy-rules
-          :rules="[ val => val && val.length >= 5 || 'Please enter client\'s full name']"
-        />
+          :rules="[ val => !!val && val.length >= 5 || 'Please enter client`s full name'] "
+        )
 
-        <q-input
+        q-input(
           ref="phone"
           filled
           mask="(###) ### - ####"
@@ -21,30 +21,22 @@
           label="Phone's number *"
           lazy-rules
           hint="Mask: (###) ### - ####"
-          :rules="[
-            val => val !== null && val !== '' || 'Please enter client\'s phone'
-          ]"
-        />
+          :rules="[ val => !!val || 'Please enter client`s phone' ]"
+        )
 
-        <q-input
+        q-input(
           ref="email"
           filled
           v-model="email"
           label="Email *"
           lazy-rules
-          :rules="[
-            val => this.validEmail(val) || 'Please enter correct email'
-          ]"
-        />
+          :rules="[ val => this.validEmail(val) || 'Please enter correct email' ]"
+        )
 
-        <div>
-          <q-btn label="Create" type="submit" color="primary" />
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-          <q-btn label="Cancel" color="primary" flat class="q-ml-sm" v-close-popup />
-        </div>
-      </form>
-    </div>
-  </q-card>
+        div
+          q-btn(label="Create" type="submit" color="primary")
+          q-btn(label="Reset" type="reset" color="primary" flat class="q-ml-sm")
+          q-btn(label="Cancel" color="primary" flat class="q-ml-sm" v-close-popup)
 </template>
 
 <script>
@@ -80,7 +72,7 @@ export default {
       this.$refs.phone.resetValidation()
       this.$refs.email.resetValidation()
     },
-
+    
     validEmail (email) {
       var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);

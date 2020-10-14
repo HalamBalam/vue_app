@@ -1,9 +1,9 @@
 <template lang="pug">
-  div(class="q-pa-md q-gutter-sm")
+  .q-pa-md.q-gutter-sm
     q-dialog(v-model="errors" :position="'top'")
       q-card(style="width: 350px")
         q-card-section(class="row items-center no-wrap")
-          div(class="text-weight-bold") {{ errorText }}
+          .text-weight-bold {{ errorText }}
 
     q-btn(color="primary" label="New" @click="newClient = true")
     q-dialog(v-model="newClient" persistent)
@@ -12,7 +12,11 @@
     template(v-if="selected.length == 1")
       q-btn(color="primary" label="Edit" @click="editClientClick")
     q-dialog(v-model="editClient" persistent)
-      editClient(:editClientId="editClientId", :editClientFullName="editClientFullName", :editClientPhone="editClientPhone", :editClientEmail="editClientEmail" v-on:updateClient="updateClient")
+      editClient(:editClientId="editClientId",
+                 :editClientFullName="editClientFullName",
+                 :editClientPhone="editClientPhone",
+                 :editClientEmail="editClientEmail"
+                 v-on:updateClient="updateClient")
 
     template(v-if="selected.length > 0")
       q-btn(color="primary" label="Delete" @click="deleteClient = true")
@@ -76,14 +80,7 @@ export default {
     createClient (fullName, phone, email) {
       this.$api.clients.create(fullName, phone, email)
         .then((response) => {
-          if (response.status >= 200 && response.status < 300) {
-            this.$q.notify({
-              icon: 'done',
-              color: 'positive',
-              message: 'Created'
-            })
-            this.newClient = false
-          }
+          this.newClient = false
         })
         .catch((response) => {
           this.errors = true
@@ -95,15 +92,8 @@ export default {
     updateClient (fullName, phone, email, organizations) {
       this.$api.clients.update(this.editClientId, fullName, phone, email, organizations)
         .then((response) => {
-          if (response.status >= 200 && response.status < 300) {
-            this.$q.notify({
-              icon: 'done',
-              color: 'positive',
-              message: 'Updated'
-            })
-            this.editClient = false
-            this.selected = []
-          }
+          this.editClient = false
+          this.selected = []
         })
         .catch((response) => {
           this.errors = true
@@ -136,7 +126,7 @@ export default {
           })
       })
     },
-
+    
     getSelectedString () {
       return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.data.length}`
     }

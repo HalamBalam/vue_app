@@ -8,7 +8,7 @@
         q-btn(dense flat @click="logOut") Exit
       template(v-else)
         q-toolbar-title Please, log in to the system
-        div(class="q-pa-md q-gutter-sm")
+        .q-pa-md.q-gutter-sm
           q-btn(dense flat @click="logIn") Log in
 </template>
 
