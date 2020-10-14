@@ -11,16 +11,11 @@
 
         dashboard(:rawHtml="rawHtml", :userSignedIn="!!currentStaff")
 
-        <q-footer elevated class="bg-grey-8 text-white">
-          <q-toolbar>
-            <q-toolbar-title>
-              <q-avatar>
-                <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
-              </q-avatar>
-              Title
-            </q-toolbar-title>
-          </q-toolbar>
-        </q-footer>
+        q-footer(elevated class="bg-grey-8 text-white")
+          q-toolbar
+            q-toolbar-title
+              q-avatar
+                img(src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg")
 </template>
 
 <script>
