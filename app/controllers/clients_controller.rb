@@ -48,4 +48,15 @@ class ClientsController < ApplicationController
     client = Client.find(params[:id])
     client.destroy
   end
+
+  def create
+    client = Client.new
+    client.email = params[:client][:email]
+    client.password = params[:client][:password]
+    if client.save!
+      200
+    else
+      500
+    end
+  end
 end

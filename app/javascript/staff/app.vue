@@ -5,8 +5,7 @@
     template(v-else-if="error")
       p Error :-(
     template(v-else)
-      q-layout(view="hHh lpr fff")
-
+        
         navbar(:user="currentStaff || ''", :userSignedIn="!!currentStaff" v-on:staffAuthorization="staffAuthorization")
 
         dashboard(:rawHtml="rawHtml", :userSignedIn="!!currentStaff")
