@@ -5,10 +5,11 @@
     template(v-else-if="error")
       p Error :-(
     template(v-else)
-        
-        navbar(:user="currentStaff || ''", :userSignedIn="!!currentStaff" v-on:staffAuthorization="staffAuthorization")
+      q-layout(view="hHh lpr fff")
 
-        dashboard(:rawHtml="rawHtml", :userSignedIn="!!currentStaff")
+        navbar(:user="currentClient || ''", :userSignedIn="!!currentClient" v-on:clientAuthorization="clientAuthorization")
+
+        dashboard(:rawHtml="rawHtml", :userSignedIn="!!currentClient")
 
         q-footer(elevated class="bg-grey-8 text-white")
           q-toolbar
@@ -26,25 +27,28 @@ export default {
     return {
       loading: true,
       error: false,
-      currentStaff: null,
+      currentClient: null,
       rawHtml: ''
     }
   },
+
   created () {
-    this.setCurrentStaff()
+    this.setCurrentClient()
   },
+
   methods: {
-    setCurrentStaff () {
+    setCurrentClient () {
       this.loading = true
 
-      this.$api.staffs.current()
+      this.$api.clients.current()
       .then(({ data }) => {
-        this.currentStaff = data
+        this.currentClient = data
       })
       .catch(() => (this.error = true))
       .finally(() => this.loading = false)
     },
-    staffAuthorization (data) {
+
+    clientAuthorization (data) {
       this.rawHtml = data
     }
   },

@@ -10,7 +10,6 @@
         q-toolbar-title Please, log in to the system
         .q-pa-md.q-gutter-sm
           q-btn(dense flat @click="logIn") Log in
-          q-btn(dense flat @click="newStaff") New staff
 </template>
 
 <script>
@@ -28,23 +27,25 @@ export default {
   },
   methods: {
     logIn () {
-      this.$api.staffs.signIn()
+      this.$api.clients.signIn()
         .then(({ data }) => {
-          this.$emit('staffAuthorization', data)
+          this.$emit('clientAuthorization', data)
         })
     },
+
     logOut () {
-      this.$api.staffs.signOut()
+      this.$api.clients.signOut()
         .then(({ status }) => {
           if (status == 200) {
             location.reload()
           }
         })
     },
-    newStaff () {
-      this.$api.staffs.signUp()
+
+    newClient () {
+      this.$api.clients.signUp()
         .then(({ data }) => {
-          this.$emit('staffAuthorization', data)
+          this.$emit('clientAuthorization', data)
         })
     }
   }
