@@ -1,5 +1,5 @@
 class ClientsController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  before_action :load_resource, only: [:show, :update, :destroy, :reset_password]
 
   def index
     if params[:organization_id].present?
@@ -13,12 +13,11 @@ class ClientsController < ApplicationController
     render json: current_client&.full_name
   end
 
+  def show; end
+
   def create
-    client = Client.new
-    client.full_name = params[:client][:full_name]
-    client.phone     = params[:client][:phone]
-    client.email     = params[:client][:email]
-    client.password  = params[:client][:password]
+    client = Client.new(permitted_params)
+    client.password = params[:password]
     if client.save!
       200
     else
@@ -27,15 +26,10 @@ class ClientsController < ApplicationController
   end
 
   def update
-    client = Client.find(params[:id])
-    client.full_name = params[:client][:full_name]
-    client.phone     = params[:client][:phone]
-    client.email     = params[:client][:email]
-    
-    if client.save!
-      client.organizations.clear
+    if @client.update(permitted_params)
+      @client.organizations.clear
       params[:client][:organizations].each do |id|
-        client.organizations << Organization.find(id)
+        @client.organizations << Organization.find(id)
       end
 
       200
@@ -45,7 +39,24 @@ class ClientsController < ApplicationController
   end
 
   def destroy
-    client = Client.find(params[:id])
-    client.destroy
+    @client.destroy
+  end
+
+  def reset_password
+    if @client.reset_password(params[:password], params[:password])
+      200
+    else
+      422
+    end
+  end
+
+  private
+
+  def load_resource
+    @client = Client.find(params[:id])
+  end
+
+  def permitted_params
+    params.require(:client).permit(:full_name, :phone, :email)
   end
 end

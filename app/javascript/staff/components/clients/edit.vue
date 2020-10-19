@@ -1,109 +1,116 @@
 <template lang="pug">
-  q-card
-    div(class="q-pa-md" style="max-width: 430px")
-      form(@submit.prevent.stop="onSubmit" @reset.prevent.stop="onReset" class="q-gutter-md")
-        q-input(
-          ref="fullName"
-          filled
-          v-model="fullName"
-          label="Full name *"
-          hint="Name and surname"
-          lazy-rules
-          :rules="[ val => !!val && val.length >= 5 || 'Please enter client`s full name' ]"
-        )
+  q-dialog(ref="dialog" v-model="editDialog" persistent @hide="pushToClients")
+    q-card
+      div(class="q-pa-md" style="max-width: 400px")
+        q-form(ref="form" @submit="onSubmit" class="q-gutter-md")
+          q-input(
+            ref="fullName"
+            filled
+            v-model="client.full_name"
+            label="Full name *"
+            hint="Name and surname"
+            lazy-rules
+            :rules="[ val => !!val && val.length >= 5 || 'Please enter client`s full name' ]"
+          )
 
-        q-input(
-          ref="phone"
-          filled
-          mask="(###) ### - ####"
-          unmasked-value
-          v-model="phone"
-          label="Phone's number *"
-          lazy-rules
-          hint="Mask: (###) ### - ####"
-          :rules="[ val => !!val || 'Please enter client`s phone' ]"
-        )
+          q-input(
+            ref="phone"
+            filled
+            mask="(###) ### - ####"
+            unmasked-value
+            v-model="client.phone"
+            label="Phone's number *"
+            lazy-rules
+            hint="Mask: (###) ### - ####"
+            :rules="[ val => !!val || 'Please enter client`s phone' ]"
+          )
 
-        q-input(
-          ref="email"
-          filled
-          v-model="email"
-          label="Email *"
-          lazy-rules
-          :rules="[ val => this.validEmail(val) || 'Please enter correct email' ]"
-        )
+          q-input(
+            ref="email"
+            filled
+            v-model="client.email"
+            label="Email *"
+            lazy-rules
+            :rules="[ val => this.validEmail(val) || 'Please enter correct email' ]"
+          )
 
-        q-table(
-          title="Organizations"
-          :data="data"
-          :columns="columns"
-          row-key="id"
-          :selected-rows-label="getSelectedString"
-          selection="multiple"
-          :selected.sync="selected"
-        )
+          q-dialog(v-model="resetPasswordDialog")
+            ResetPassword(@resetPassword="resetPassword")
 
-        div
-          q-btn(label="Update" type="submit" color="primary")
-          q-btn(label="Reset" type="reset" color="primary" flat class="q-ml-sm")
-          q-btn(label="Cancel" color="primary" flat class="q-ml-sm" v-close-popup)
+          q-select(
+            filled
+            clearable
+            v-model="client.organizations"
+            multiple
+            :options="organizations"
+            label="Organizations"
+            style="width: 250px"
+            @clear="clearOrganizations"
+          )
+
+          div
+            q-btn(label="Update" type="submit" color="primary")
+            q-btn(label="Reset Password" color="primary" flat class="q-ml-sm" @click="showResetPasswordDialog")
+            q-btn(label="Cancel" color="primary" flat class="q-ml-sm" v-close-popup)
 
 </template>
 
 <script>
+import ResetPassword from '../reset_password/ResetPassword.vue'
+
 export default {
   data () {
     return {
-      id: this.editClientId,
-      fullName: this.editClientFullName,
-      phone: this.editClientPhone,
-      email: this.editClientEmail,
-
-      data: [],
-      columns: [
-        { name: 'id', required: true, label: 'Id', align: 'right', field: 'id', sortable: true },
-        { name: 'name', required: true, label: 'Name', align: 'left', field: 'name', sortable: true },
-        { name: 'org_type', required: true, label: 'Type', align: 'left', field: 'org_type' },
-        { name: 'inn', required: true, label: 'INN', align: 'left', field: 'inn' },
-        { name: 'ogrn', required: true, label: 'OGRN', align: 'left', field: 'ogrn' }
-      ],
-      selected: []
+      editDialog: true,
+      resetPasswordDialog: false,
+      client: {
+        full_name: null,
+        phone: null,
+        email: null,
+        organizations: []
+      },
+      organizations: []
+    }
+  },
+ 
+  computed: {
+    id () {
+      return this.$route.params.id
     }
   },
 
-  props: ['editClientId', 'editClientFullName', 'editClientPhone', 'editClientEmail'],
- 
   created () {
-    this.loadOrganizations()
+    this.clientInitialize()
   },
 
   methods: {
     onSubmit () {
-      this.$refs.fullName.validate()
-      this.$refs.phone.validate()
-      this.$refs.email.validate()
+      this.$refs.form.validate().then(success => {
+        if (success) {
+          this.client.organizations = this.client.organizations.map(item => item.value)
 
-      if (this.$refs.fullName.hasError || this.$refs.phone.hasError || this.$refs.email.hasError) {
-        this.formHasError = true
-      }
-      else {
-        let organizations = []
-        for (let item of this.selected) {
-          organizations.push(item.id)
+          this.$emit('updateClient', this.id, this.client)
+          this.$refs.dialog.hide()
         }
-
-        this.$emit('updateClient', this.fullName, this.phone, this.email, organizations)
-      }
+      })
     },
 
-    onReset () {
-      this.fullName = null
-      this.phone = null
-      this.email = null
-      
-      this.$refs.fullName.resetValidation()
-      this.$refs.phone.resetValidation()
-      this.$refs.email.resetValidation()
+    clientInitialize () {
+      this.$api.clients.show(this.id)
+      .then(({ data }) => {
+        this.client.full_name = data.full_name
+        this.client.phone = data.phone
+        this.client.email = data.email
+
+        for (let item of data.organizations) {
+          this.client.organizations.push({
+            label: item.name,
+            value: item.id
+          })
+        }
+
+        this.loadOrganizations()
+      })
     },
 
     validEmail (email) {
@@ -113,24 +120,36 @@ export default {
 
     loadOrganizations () {
       this.$api.organizations.index()
-      .then(({ data }) => {
-        this.data = data
-
-        this.$api.organizations.index(this.id)
         .then(({ data }) => {
-          for (let item of this.data) {
-            let result = data.find(clients_organization => clients_organization.id == item.id)
-            if (result) {
-              this.selected.push(result)
-            }
+          for (let item of data) {
+            this.organizations.push({
+              label: item.name,
+              value: item.id
+            })
           }
         })
-      })
     },
 
-    getSelectedString () {
-      return this.selected.length === 0 ? '' : `${this.selected.length} record${this.selected.length > 1 ? 's' : ''} selected of ${this.data.length}`
+    pushToClients () {
+      this.$router.push({ name: 'clients' })
+    },
+
+    showResetPasswordDialog () {
+      this.resetPasswordDialog = true
+    },
+
+    resetPassword (newPassword) {
+      this.$api.clients.resetPassword(this.id, newPassword)
+        .then(() => this.resetPasswordDialog = false)
+    },
+
+    clearOrganizations () {
+      this.client.organizations = []
     }
+  },
+
+  components: {
+    ResetPassword
   }
 }
 </script>

@@ -1,5 +1,5 @@
 class OrganizationsController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  before_action :load_resource, only: [:show, :update, :destroy]
 
   def index
     if client_signed_in?
@@ -11,12 +11,10 @@ class OrganizationsController < ApplicationController
     end
   end
 
+  def show; end
+
   def create
-    organization = Organization.new
-    organization.name     = params[:organization][:name]
-    organization.org_type = params[:organization][:org_type]
-    organization.inn      = params[:organization][:inn]
-    organization.ogrn     = params[:organization][:ogrn]
+    organization = Organization.new(permitted_params)
     if organization.save!
       200
     else
@@ -25,16 +23,16 @@ class OrganizationsController < ApplicationController
   end
 
   def update
-    organization = Organization.find(params[:id])
-    organization.name     = params[:organization][:name]
-    organization.org_type = params[:organization][:org_type]
-    organization.inn      = params[:organization][:inn]
-    organization.ogrn     = params[:organization][:ogrn]
-    
-    if organization.save!
-      organization.clients.clear
+    if @organization.update(permitted_params)
+      
+      @organization.clients.clear
       params[:organization][:clients].each do |id|
-        organization.clients << Client.find(id)
+        @organization.clients << Client.find(id)
+      end
+
+      @organization.equipments.clear
+      params[:organization][:equipments].each do |id|
+        @organization.equipments << Equipment.find(id)
       end
 
       200
@@ -44,7 +42,16 @@ class OrganizationsController < ApplicationController
   end
 
   def destroy
-    organization = Organization.find(params[:id])
-    organization.destroy
+    @organization.destroy
+  end
+
+  private
+
+  def load_resource
+    @organization = Organization.find(params[:id])
+  end
+
+  def permitted_params
+    params.require(:organization).permit(:name, :org_type, :inn, :ogrn)
   end
 end
