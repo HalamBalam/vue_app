@@ -1,8 +1,8 @@
 <template lang="pug">
   q-dialog(ref="dialog" v-model="newDialog" persistent @hide="pushToEquipments")
     q-card
-      div(class="q-pa-md" style="max-width: 330px")
-        q-form(ref="form" @submit="onSubmit" @reset="onReset" class="q-gutter-md")
+      div.q-pa-md(style="max-width: 330px")
+        q-form.q-gutter-md(ref="form" @submit="onSubmit" @reset="onReset")
           q-input(
             ref="name"
             filled
@@ -32,8 +32,8 @@
 
           div
             q-btn(label="Create" type="submit" color="primary")
-            q-btn(label="Reset" type="reset" color="primary" flat class="q-ml-sm")
-            q-btn(label="Cancel" color="primary" flat class="q-ml-sm" v-close-popup)
+            q-btn.q-ml-sm(label="Reset" type="reset" color="primary" flat)
+            q-btn.q-ml-sm(label="Cancel" color="primary" flat v-close-popup)
 </template>
 
 <script>

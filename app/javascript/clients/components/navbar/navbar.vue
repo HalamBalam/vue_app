@@ -1,5 +1,5 @@
 <template lang="pug">
-  q-header(reveal elevated class="bg-primary text-white" height-hint="98")
+  q-header.bg-primary.text-white(reveal elevated height-hint="98")
     q-toolbar
       q-avatar
         img(src="/logo.jpg")

@@ -1,6 +1,6 @@
 <template lang="pug">
   q-card
-    q-card-section(class="q-gutter-md")
+    q-card-section.q-gutter-md
       q-input(
         ref="password"
         filled
@@ -11,9 +11,8 @@
         :rules="[ val => !!val || 'Please enter new password' ]"
       )
         template(v-slot:append)
-          q-icon(
+          q-icon.cursor-pointer(
             :name="hidePassword ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
             @click="hidePassword = !hidePassword"
           )
       q-input(
@@ -26,9 +25,8 @@
         :rules="[ val => val == this.password || 'Invalid password confirmation' ]"
       )
         template(v-slot:append)
-          q-icon(
+          q-icon.cursor-pointer(
             :name="hidePasswordConfirmation ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
             @click="hidePasswordConfirmation = !hidePasswordConfirmation"
           )
       .q-gutter-sm

@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     q-drawer(show-if-above v-model="left" side="left" bordered content-class="bg-grey-3")
-      q-scroll-area(class="fit")
+      q-scroll-area.fit
         q-list
           template(v-for="(menuItem, index) in menuList")
             q-item(

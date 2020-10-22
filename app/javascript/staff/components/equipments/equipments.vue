@@ -2,7 +2,7 @@
   .q-pa-md.q-gutter-sm
     q-dialog(v-model="errors" :position="'top'")
       q-card(style="width: 350px")
-        q-card-section(class="row items-center no-wrap")
+        q-card-section.row.items-center.no-wrap
           .text-weight-bold {{ errorText }}
 
     q-btn(color="primary" unelevated label="New" @click="newEquipmentClick")
@@ -14,9 +14,9 @@
 
     q-dialog(v-model="deleteDialog" persistent)
       q-card
-        q-card-section(class="row items-center")
+        q-card-section.row.items-center
           q-avatar(icon="delete" color="primary" text-color="white")
-          span(class="q-ml-sm") Selected equipment will be deleted.
+          span.q-ml-sm Selected equipment will be deleted.
         q-card-actions(align="right")
           q-btn(label="Delete" color="primary" v-close-popup @click="deleteEquipment")
           q-btn(flat label="Cancel" color="primary" v-close-popup)

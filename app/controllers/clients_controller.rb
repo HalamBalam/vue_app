@@ -2,11 +2,7 @@ class ClientsController < ApplicationController
   before_action :load_resource, only: [:show, :update, :destroy, :reset_password]
 
   def index
-    if params[:organization_id].present?
-      render json: Organization.find(params[:organization_id]).clients
-    else
-      render json: Client.all
-    end
+    render json: Client.all
   end
 
   def get_current_client
@@ -18,11 +14,7 @@ class ClientsController < ApplicationController
   def create
     client = Client.new(permitted_params)
     client.password = params[:password]
-    if client.save!
-      200
-    else
-      422
-    end
+    client.save! ? 200 : 422
   end
 
   def update
@@ -43,11 +35,7 @@ class ClientsController < ApplicationController
   end
 
   def reset_password
-    if @client.reset_password(params[:password], params[:password])
-      200
-    else
-      422
-    end
+    @client.reset_password(params[:password], params[:password]) ? 200 : 422
   end
 
   private

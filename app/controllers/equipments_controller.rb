@@ -9,19 +9,11 @@ class EquipmentsController < ApplicationController
 
   def create
     equipment = Equipment.new(permitted_params)
-    if equipment.save!
-      200
-    else
-      422
-    end
+    equipment.save! ? 200 : 422
   end
 
   def update
-    if @equipment.update(permitted_params)
-      200
-    else
-      422
-    end
+    @equipment.update(permitted_params) ? 200 : 422
   end
 
   def destroy

@@ -4,8 +4,6 @@ class OrganizationsController < ApplicationController
   def index
     if client_signed_in?
       render json: current_client.organizations
-    elsif params[:client_id].present?
-      render json: Client.find(params[:client_id]).organizations
     else
       render json: Organization.all
     end
@@ -15,11 +13,7 @@ class OrganizationsController < ApplicationController
 
   def create
     organization = Organization.new(permitted_params)
-    if organization.save!
-      200
-    else
-      422
-    end
+    organization.save! ? 200 : 422
   end
 
   def update
