@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     q-drawer(show-if-above v-model="left" side="left" bordered content-class="bg-grey-3")
-      q-scroll-area(class="fit")
+      q-scroll-area.fit
         q-list
           template(v-for="(menuItem, index) in menuList")
             q-item(
@@ -9,7 +9,7 @@
               clickable
               :active="currentMenuItem === index"
               v-ripple
-              @click="currentMenuItem = index"
+              @click="menuItemClick(menuItem, index)"
             )
               q-item-section(avatar)
                 q-icon(:name="menuItem.icon")
@@ -21,10 +21,7 @@
         template(v-if="!!rawHtml")
           span(v-html="rawHtml")
         template(v-else-if="userSignedIn")
-          template(v-if="currentMenuItem === 0")
-            clients
-          template(v-if="currentMenuItem === 1")
-            organizations
+          router-view
 
 </template>
 
@@ -36,12 +33,20 @@ import Organizations from '../organizations/organizations.vue'
   {
     icon: 'people',
     label: 'Clients',
-    separator: true
+    separator: false,
+    route: 'clients'
   },
   {
     icon: 'apartment',
     label: 'Organizations',
-    separator: false
+    separator: true,
+    route: 'organizations'
+  },
+  {
+    icon: 'construction',
+    label: 'Equipments',
+    separator: false,
+    route: 'equipments'
   }
 ]
 
@@ -55,6 +60,20 @@ export default {
   },
   name: 'Dashboard',
   props: ['rawHtml', 'userSignedIn'],
+
+  created () {
+    this.currentMenuItem = this.menuList.findIndex(item => item.route == this.$route.name)
+  },
+
+  methods: {
+    menuItemClick (menuItem, index) {
+      this.currentMenuItem = index
+      if (this.$route.name != menuItem.route) {
+        this.$router.push({ name: menuItem.route })
+      }
+    }
+  },
+
   components: {
     Clients,
     Organizations

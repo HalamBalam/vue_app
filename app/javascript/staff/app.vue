@@ -10,7 +10,7 @@
 
         dashboard(:rawHtml="rawHtml", :userSignedIn="!!currentStaff")
 
-        q-footer(elevated class="bg-grey-8 text-white")
+        q-footer.bg-grey-8.text-white(elevated)
           q-toolbar
             q-toolbar-title
               q-avatar
