@@ -47,4 +47,15 @@ class ClientsController < ApplicationController
   def permitted_params
     params.require(:client).permit(:full_name, :phone, :email)
   end
+
+  def create
+    client = Client.new
+    client.email = params[:client][:email]
+    client.password = params[:client][:password]
+    if client.save!
+      200
+    else
+      500
+    end
+  end
 end

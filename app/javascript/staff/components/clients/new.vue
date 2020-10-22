@@ -68,6 +68,7 @@
             q-btn(label="Create" type="submit" color="primary")
             q-btn.q-ml-sm(label="Reset" type="reset" color="primary" flat)
             q-btn.q-ml-sm(label="Cancel" color="primary" flat v-close-popup)
+
 </template>
 
 <script>
