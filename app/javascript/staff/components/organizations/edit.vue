@@ -6,29 +6,29 @@
           q-input(
             ref="name"
             filled
-            v-model="organization.name"
+            v-model="$store.state.organizations.organization.name"
             label="Name *"
             lazy-rules
             :rules="[ val => !!val || 'Please enter organization`s name' ]"
           )
 
-          q-radio(v-model="organization.org_type" val="LE" label="Legal Entity")
-          q-radio(v-model="organization.org_type" val="IE" label="Individual Entrepreneur")
+          q-radio(v-model="$store.state.organizations.organization.org_type" val="LE" label="Legal Entity")
+          q-radio(v-model="$store.state.organizations.organization.org_type" val="IE" label="Individual Entrepreneur")
 
           q-input(
             ref="inn"
             filled
-            v-model="organization.inn"
+            v-model="$store.state.organizations.organization.inn"
             label="INN *"
             hint="Taxpayer identification number (LE - 10 ch., IE - 12 ch.)"
             lazy-rules
-            :rules="[ val => !!val && (this.organization.org_type == 'LE' ? val.length == 10 : val.length == 12) || 'Please enter correct value' ]"
+            :rules="[ val => !!val && ($store.state.organizations.organization.org_type == 'LE' ? val.length == 10 : val.length == 12) || 'Please enter correct value' ]"
           )
 
           q-input(
             ref="ogrn"
             filled
-            v-model="organization.ogrn"
+            v-model="$store.state.organizations.organization.ogrn"
             label="OGRN *"
             hint="Main state registration number (13 ch.)"
             lazy-rules
@@ -38,23 +38,23 @@
           q-select(
             filled
             clearable
-            v-model="organization.clients"
+            v-model="$store.state.organizations.organization.clients"
             multiple
             :options="clients"
             label="Clients"
             style="width: 250px"
-            @clear="clearClients"
+            @clear="CLEAR_CLIENTS"
           )
 
           q-select(
             filled
             clearable
-            v-model="organization.equipments"
+            v-model="$store.state.organizations.organization.equipments"
             multiple
             :options="equipments"
             label="Equipment"
             style="width: 250px"
-            @clear="clearEquipments"
+            @clear="CLEAR_EQUIPMENTS"
           )
 
           div
@@ -63,18 +63,12 @@
 </template>
 
 <script>
+import { mapActions, mapMutations } from 'vuex'
+
 export default {
   data () {
     return {
       editDialog: true,
-      organization: {
-        name: null,
-        org_type: null,
-        inn: null,
-        ogrn: null,
-        clients: [],
-        equipments: []
-      },
       clients: [],
       equipments: []
     }
@@ -91,43 +85,30 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      show: 'organizations/show',
+      update: 'organizations/update'
+    }),
+
+    ...mapMutations({
+      CLEAR_CLIENTS: 'organizations/CLEAR_CLIENTS',
+      CLEAR_EQUIPMENTS: 'organizations/CLEAR_EQUIPMENTS'
+    }),
+
     onSubmit () {
       this.$refs.form.validate().then(success => {
         if (success) {
-          this.organization.clients = this.organization.clients.map(item => item.value)
-          this.organization.equipments = this.organization.equipments.map(item => item.value)
-          
-          this.$emit('updateOrganization', this.id, this.organization)
+          this.update(this.id)
           this.$refs.dialog.hide()
         }
       })
     },
 
     organizationInitialize () {
-      this.$api.organizations.show(this.id)
-        .then(({ data }) => {
-          this.organization.name = data.name
-          this.organization.org_type = data.org_type
-          this.organization.inn = data.inn
-          this.organization.ogrn = data.ogrn
+      this.show(this.id)
 
-          for (let item of data.clients) {
-            this.organization.clients.push({
-              label: item.full_name,
-              value: item.id
-            })
-          }
-
-          for (let item of data.equipments) {
-            this.organization.equipments.push({
-              label: item.name,
-              value: item.id
-            })
-          }
-          
-          this.loadClients()
-          this.loadEquipments()
-        })
+      this.loadClients()
+      this.loadEquipments()
     },
 
     loadClients () {
@@ -156,14 +137,6 @@ export default {
     
     pushToOrganizations () {
       this.$router.push({ name: 'organizations' })
-    },
-
-    clearClients() {
-      this.organization.clients = []
-    },
-
-    clearEquipments() {
-      this.organization.equipments = []
     }
   }
 }

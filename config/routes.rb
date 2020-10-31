@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
   get :clients_dashboard, to: 'application#clients_dashboard'
 
+  get '/organizations_count', to: 'organizations#count'
+
   get '/clients/*slug', to: 'application#clients_dashboard'
   get '/staffs/*slug', to: 'application#index'
   get '/*slug', to: 'application#index'

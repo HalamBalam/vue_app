@@ -6,7 +6,7 @@
           q-input(
             ref="name"
             filled
-            v-model="equipment.name"
+            v-model="$store.state.equipments.equipment.name"
             label="Name *"
             lazy-rules
             :rules="[ val => !!val || 'Please enter equipment`s name' ]"
@@ -15,7 +15,7 @@
           q-input(
             ref="equipment_type"
             filled
-            v-model="equipment.equipment_type"
+            v-model="$store.state.equipments.equipment.equipment_type"
             label="Type *"
             lazy-rules
             :rules="[ val => !!val || 'Please enter equipment`s type' ]"
@@ -24,7 +24,7 @@
           q-input(
             ref="serial_number"
             filled
-            v-model="equipment.serial_number"
+            v-model="$store.state.equipments.equipment.serial_number"
             label="Serial number *"
             lazy-rules
             :rules="[ val => !!val || 'Please enter equipment`s serial number' ]"
@@ -37,35 +37,35 @@
 </template>
 
 <script>
+import { mapActions, mapMutations } from 'vuex'
+
 export default {
   data () {
     return {
-      equipment: this.equipmentInitialize(),
       newDialog: true
     }
   },
 
   methods: {
-    equipmentInitialize () {
-      return {
-        name: null,
-        equipment_type: null,
-        serial_number: null
-      }
-    },
+    ...mapActions({
+      create: 'equipments/create'
+    }),
+
+    ...mapMutations({
+      EQUIPMENT_INITIALIZE: 'equipments/EQUIPMENT_INITIALIZE'
+    }),
 
     onSubmit () {
       this.$refs.form.validate().then(success => {
         if (success) {
-          this.$emit('createEquipment', this.equipment)
+          this.create()
           this.$refs.dialog.hide()
         }
       })
     },
 
     onReset () {
-      this.equipment = this.equipmentInitialize()
-
+      this.EQUIPMENT_INITIALIZE()
       this.$refs.form.resetValidation()
     },
 

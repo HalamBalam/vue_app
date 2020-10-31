@@ -6,29 +6,29 @@
           q-input(
             ref="name"
             filled
-            v-model="organization.name"
+            v-model="$store.state.organizations.organization.name"
             label="Name *"
             lazy-rules
             :rules="[ val => !!val || 'Please enter organization`s name' ]"
           )
 
-          q-radio(v-model="organization.org_type" val="LE" label="Legal Entity")
-          q-radio(v-model="organization.org_type" val="IE" label="Individual Entrepreneur")
+          q-radio(v-model="$store.state.organizations.organization.org_type" val="LE" label="Legal Entity")
+          q-radio(v-model="$store.state.organizations.organization.org_type" val="IE" label="Individual Entrepreneur")
 
           q-input(
             ref="inn"
             filled
-            v-model="organization.inn"
+            v-model="$store.state.organizations.organization.inn"
             label="INN *"
             hint="Taxpayer identification number (LE - 10 ch., IE - 12 ch.)"
             lazy-rules
-            :rules="[ val => !!val && (this.organization.type == 'LE' ? val.length == 10 : val.length == 12) || 'Please enter correct value' ]"
+            :rules="[ val => !!val && ($store.state.organizations.organization.org_type == 'LE' ? val.length == 10 : val.length == 12) || 'Please enter correct value' ]"
           )
 
           q-input(
             ref="ogrn"
             filled
-            v-model="organization.ogrn"
+            v-model="$store.state.organizations.organization.ogrn"
             label="OGRN *"
             hint="Main state registration number (13 ch.)"
             lazy-rules
@@ -42,36 +42,35 @@
 </template>
 
 <script>
+import { mapActions, mapMutations } from 'vuex'
+
 export default {
   data () {
     return {
-      organization: this.organizationInitialize(),
       newDialog: true
     }
   },
 
   methods: {
-    organizationInitialize () {
-      return {
-        name: null,
-        org_type: 'LE',
-        inn: null,
-        ogrn: null
-      }
-    },
+    ...mapActions({
+      create: 'organizations/create'
+    }),
+
+    ...mapMutations({
+      ORGANIZATION_INITIALIZE: 'organizations/ORGANIZATION_INITIALIZE'
+    }),
 
     onSubmit () {
       this.$refs.form.validate().then(success => {
         if (success) {
-          this.$emit('createOrganization', this.organization)
+          this.create()
           this.$refs.dialog.hide()
         }
       })
     },
 
     onReset () {
-      this.organization = this.organizationInitialize()
-
+      this.ORGANIZATION_INITIALIZE()
       this.$refs.form.resetValidation()
     },
 

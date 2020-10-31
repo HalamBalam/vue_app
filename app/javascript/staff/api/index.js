@@ -32,11 +32,12 @@ const api = {
   },
 
   organizations: {
-    index: () => adapter.get('/organizations'),
+    index: (params) => adapter.get('/organizations', { params: params }),
     show: (id) => adapter.get(`/organizations/${id}`),
     create: (params) => adapter.post('/organizations', params),
     update: (id, params) => adapter.put(`/organizations/${id}`, { organization: params }),
-    delete: (id) => adapter.delete(`/organizations/${id}`)
+    delete: (id) => adapter.delete(`/organizations/${id}`),
+    count: (params) => adapter.get('/organizations_count', { params: params })
   },
 
   equipments: {
