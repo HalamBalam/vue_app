@@ -1,6 +1,6 @@
 <template lang="pug">
   .q-pa-md.q-gutter-sm
-    q-dialog(v-model="$store.state.error" :position="'top'")
+    q-dialog(v-model="error" :position="'top'")
       q-card(style="width: 350px")
         q-card-section.row.items-center.no-wrap
           .text-weight-bold {{ errorText }}
@@ -51,7 +51,8 @@ export default {
 
   computed: {
     ...mapState({
-      errorText: state => state.errorText
+      errorText: state => state.errorText,
+      error: state => state.error
     })
   },
 
