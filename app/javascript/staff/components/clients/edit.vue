@@ -6,7 +6,7 @@
           q-input(
             ref="fullName"
             filled
-            v-model="client.full_name"
+            v-model="$store.state.clients.client.full_name"
             label="Full name *"
             hint="Name and surname"
             lazy-rules
@@ -18,7 +18,7 @@
             filled
             mask="(###) ### - ####"
             unmasked-value
-            v-model="client.phone"
+            v-model="$store.state.clients.client.phone"
             label="Phone's number *"
             lazy-rules
             hint="Mask: (###) ### - ####"
@@ -28,7 +28,7 @@
           q-input(
             ref="email"
             filled
-            v-model="client.email"
+            v-model="$store.state.clients.client.email"
             label="Email *"
             lazy-rules
             :rules="[ val => this.validEmail(val) || 'Please enter correct email' ]"
@@ -40,12 +40,12 @@
           q-select(
             filled
             clearable
-            v-model="client.organizations"
+            v-model="$store.state.clients.client.organizations"
             multiple
             :options="organizations"
             label="Organizations"
             style="width: 250px"
-            @clear="clearOrganizations"
+            @clear="CLEAR_ORGANIZATIONS"
           )
 
           div
@@ -57,18 +57,13 @@
 
 <script>
 import ResetPassword from '../reset_password/ResetPassword.vue'
+import { mapActions, mapMutations } from 'vuex'
 
 export default {
   data () {
     return {
       editDialog: true,
       resetPasswordDialog: false,
-      client: {
-        full_name: null,
-        phone: null,
-        email: null,
-        organizations: []
-      },
       organizations: []
     }
   },
@@ -84,33 +79,27 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      show: 'clients/show',
+      update: 'clients/update'
+    }),
+
+    ...mapMutations({
+      CLEAR_ORGANIZATIONS: 'clients/CLEAR_ORGANIZATIONS'
+    }),
+
     onSubmit () {
       this.$refs.form.validate().then(success => {
         if (success) {
-          this.client.organizations = this.client.organizations.map(item => item.value)
-
-          this.$emit('updateClient', this.id, this.client)
+          this.update(this.id)
           this.$refs.dialog.hide()
         }
       })
     },
 
     clientInitialize () {
-      this.$api.clients.show(this.id)
-      .then(({ data }) => {
-        this.client.full_name = data.full_name
-        this.client.phone = data.phone
-        this.client.email = data.email
-
-        for (let item of data.organizations) {
-          this.client.organizations.push({
-            label: item.name,
-            value: item.id
-          })
-        }
-
-        this.loadOrganizations()
-      })
+      this.show(this.id)
+      this.loadOrganizations()
     },
 
     validEmail (email) {
@@ -141,10 +130,6 @@ export default {
     resetPassword (newPassword) {
       this.$api.clients.resetPassword(this.id, newPassword)
         .then(() => this.resetPasswordDialog = false)
-    },
-
-    clearOrganizations () {
-      this.client.organizations = []
     }
   },
 

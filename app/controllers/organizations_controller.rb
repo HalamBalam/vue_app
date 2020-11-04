@@ -5,7 +5,7 @@ class OrganizationsController < ApplicationController
     if client_signed_in?
       render json: current_client.organizations
     else
-      render json: Organization.all
+      render json: FindOrganizations.new(Organization.all).call(params)
     end
   end
 
@@ -37,6 +37,10 @@ class OrganizationsController < ApplicationController
 
   def destroy
     @organization.destroy
+  end
+
+  def count
+    render json: FindOrganizations.new(Organization.all).call(params).count
   end
 
   private

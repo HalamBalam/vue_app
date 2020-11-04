@@ -1,16 +1,13 @@
 <template lang="pug">
   .q-pa-md.q-gutter-sm
-    q-dialog(v-model="errors" :position="'top'")
+    q-dialog(v-model="error" :position="'top'")
       q-card(style="width: 350px")
         q-card-section.row.items-center.no-wrap
           .text-weight-bold {{ errorText }}
 
     q-btn(color="primary" unelevated label="New" @click="newClientClick")
 
-    router-view(
-      @createClient="createClient"
-      @updateClient="updateClient"
-    )
+    router-view
     
     q-dialog(v-model="deleteDialog" persistent)
       q-card
@@ -23,7 +20,7 @@
 
     q-table(
       title="Clients"
-      :data="data"
+      :data="$store.state.clients.data"
       :columns="columns"
       row-key="id"
     )
@@ -34,6 +31,8 @@
 </template>
 
 <script>
+import { mapState, mapActions, } from 'vuex'
+
 export default {
   name: 'Clients',
   data() {
@@ -45,50 +44,34 @@ export default {
         { name: 'email', required: true, label: 'Email', align: 'left', field: 'email' },
         { name: 'actions', label: 'Actions' }
       ],
-      data: [],
       deleteDialog: false,
-      currentClientId: null,
-      errors: false,
-      errorText: ''
+      currentClientId: null
     }
   },
 
+  computed: {
+    ...mapState({
+      errorText: state => state.errorText,
+      error: state => state.error
+    })
+  },
+
   created () {
-    this.loadClients()
+    this.fetch()
   },
 
   methods: {
-    loadClients () {
-      this.$api.clients.index()
-      .then(({ data }) => {
-        this.data = data
-      })
-    },
+    ...mapActions({
+      fetch: 'clients/fetch',
+      deleteCurrentClient: 'clients/delete'
+    }),
 
     newClientClick () {
       this.$router.push({ name: 'new_client' })
     },
 
-    createClient (client) {
-      this.$api.clients.create(client)
-        .catch((response) => {
-          this.errors = true
-          this.errorText = response
-        })
-        .finally(() => this.loadClients())
-    },
-
     editClientClick (id) {
       this.$router.push({ name: 'edit_client', params: { id } })
-    },
-
-    updateClient (id, client) {
-      this.$api.clients.update(id, client)
-        .catch((response) => {
-          this.errors = true
-          this.errorText = response
-        })
-        .finally(() => this.loadClients())
     },
 
     deleteClientClick (id) {
@@ -97,15 +80,8 @@ export default {
     },
 
     deleteClient () {
-      this.$api.clients.delete(this.currentClientId)
-        .catch((response) => {
-          this.errors = true
-          this.errorText = response
-        })
-        .finally(() => {
-          this.loadClients()
-          this.currentClientId = null
-        })
+      this.deleteCurrentClient(this.currentClientId)
+      this.currentClientId = null
     }
   }
 }

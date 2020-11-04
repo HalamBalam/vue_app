@@ -1,16 +1,13 @@
 <template lang="pug">
   .q-pa-md.q-gutter-sm
-    q-dialog(v-model="errors" :position="'top'")
+    q-dialog(v-model="error" :position="'top'")
       q-card(style="width: 350px")
         q-card-section.row.items-center.no-wrap
           .text-weight-bold {{ errorText }}
 
     q-btn(color="primary" unelevated label="New" @click="newEquipmentClick")
 
-    router-view(
-      @createEquipment="createEquipment"
-      @updateEquipment="updateEquipment"
-    )
+    router-view
 
     q-dialog(v-model="deleteDialog" persistent)
       q-card
@@ -23,7 +20,7 @@
 
     q-table(
       title="Equipments"
-      :data="data"
+      :data="$store.state.equipments.data"
       :columns="columns"
       row-key="id"
     )
@@ -34,6 +31,8 @@
 </template>
 
 <script>
+import { mapState, mapActions, } from 'vuex'
+
 export default {
   name: 'Equipments',
   data() {
@@ -45,50 +44,34 @@ export default {
         { name: 'serial_number', required: true, label: 'Serial Number', align: 'left', field: 'serial_number' },
         { name: 'actions', label: 'Actions' }
       ],
-      data: [],
       deleteDialog: false,
-      currentEquipmentId: null,
-      errors: false,
-      errorText: ''
+      currentEquipmentId: null
     }
   },
 
+  computed: {
+    ...mapState({
+      errorText: state => state.errorText,
+      error: state => state.error
+    })
+  },
+
   created () {
-    this.loadEquipments()
+    this.fetch()
   },
   
   methods: {
-    loadEquipments () {
-      this.$api.equipments.index()
-      .then(({ data }) => {
-        this.data = data
-      })
-    },
+    ...mapActions({
+      fetch: 'equipments/fetch',
+      deleteCurrentEquipment: 'equipments/delete'
+    }),
 
     newEquipmentClick () {
       this.$router.push({ name: 'new_equipment' })
     },
 
-    createEquipment (equipment) {
-      this.$api.equipments.create(equipment)
-        .catch((response) => {
-          this.errors = true
-          this.errorText = response
-        })
-        .finally(() => this.loadEquipments())
-    },
-
     editEquipmentClick (id) {
       this.$router.push({ name: 'edit_equipment', params: { id } })
-    },
-
-    updateEquipment (id, equipment) {
-      this.$api.equipments.update(id, equipment)
-        .catch((response) => {
-          this.errors = true
-          this.errorText = response
-        })
-        .finally(() => this.loadEquipments())
     },
 
     deleteEquipmentClick (id) {
@@ -97,15 +80,8 @@ export default {
     },
 
     deleteEquipment () {
-      this.$api.equipments.delete(this.currentEquipmentId)
-        .catch((response) => {
-          this.errors = true
-          this.errorText = response
-        })
-        .finally(() => {
-          this.loadEquipments()
-          this.currentEquipmentId = null
-        })
+      this.deleteCurrentEquipment(this.currentEquipmentId)
+      this.currentEquipmentId = null
     }
   }
 }

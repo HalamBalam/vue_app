@@ -6,7 +6,7 @@
           q-input(
             ref="fullName"
             filled
-            v-model="client.full_name"
+            v-model="$store.state.clients.client.full_name"
             label="Full name *"
             hint="Name and surname"
             lazy-rules
@@ -18,7 +18,7 @@
             filled
             mask="(###) ### - ####"
             unmasked-value
-            v-model="client.phone"
+            v-model="$store.state.clients.client.phone"
             label="Phone's number *"
             lazy-rules
             hint="Mask: (###) ### - ####"
@@ -28,7 +28,7 @@
           q-input(
             ref="email"
             filled
-            v-model="client.email"
+            v-model="$store.state.clients.client.email"
             label="Email *"
             lazy-rules
             :rules="[ val => this.validEmail(val) || 'Please enter correct email' ]"
@@ -37,7 +37,7 @@
           q-input(
             ref="password"
             filled
-            v-model="client.password"
+            v-model="$store.state.clients.client.password"
             :type="hidePassword ? 'password' : 'text'"
             label="Password"
             lazy-rules
@@ -52,11 +52,11 @@
           q-input(
             ref="passwordConfirmation"
             filled
-            v-model="client.passwordConfirmation"
+            v-model="$store.state.clients.client.passwordConfirmation"
             :type="hidePasswordConfirmation ? 'password' : 'text'"
             label="Confirm password"
             lazy-rules
-            :rules="[ val => val == this.client.password || 'Invalid password confirmation' ]"
+            :rules="[ val => val == $store.state.clients.client.password || 'Invalid password confirmation' ]"
           )
             template(v-slot:append)
               q-icon.cursor-pointer(
@@ -72,10 +72,11 @@
 </template>
 
 <script>
+import { mapActions, mapMutations } from 'vuex'
+
 export default {
   data () {
     return {
-      client: this.clientInitialize(),
       newDialog: true,
       hidePassword: true,
       hidePasswordConfirmation: true
@@ -83,28 +84,25 @@ export default {
   },
 
   methods: {
-    clientInitialize () {
-      return {
-        full_name: null,
-        phone: null,
-        email: null,
-        password: null,
-        passwordConfirmation: null
-      }
-    },
+    ...mapActions({
+      create: 'clients/create'
+    }),
+
+    ...mapMutations({
+      CLIENT_INITIALIZE: 'clients/CLIENT_INITIALIZE'
+    }),
 
     onSubmit () {
       this.$refs.form.validate().then(success => {
         if (success) {
-          this.$emit('createClient', this.client)
+          this.create()
           this.$refs.dialog.hide()
         }
       })
     },
 
     onReset () {
-      this.client = this.clientInitialize()
-
+      this.CLIENT_INITIALIZE()
       this.$refs.form.resetValidation()
     },
     
