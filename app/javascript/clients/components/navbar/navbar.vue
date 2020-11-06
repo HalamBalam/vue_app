@@ -29,14 +29,14 @@ export default {
     logIn () {
       this.$api.clients.signIn()
         .then(({ data }) => {
-          this.$emit('clientAuthorization', data)
+          this.$emit('client-authorization', data)
         })
     },
 
     logOut () {
       this.$api.clients.signOut()
         .then(({ status }) => {
-          if (status == 200) {
+          if (status === 200) {
             location.reload()
           }
         })
@@ -45,7 +45,7 @@ export default {
     newClient () {
       this.$api.clients.signUp()
         .then(({ data }) => {
-          this.$emit('clientAuthorization', data)
+          this.$emit('client-authorization', data)
         })
     }
   }

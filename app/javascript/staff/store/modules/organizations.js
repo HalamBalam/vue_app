@@ -85,8 +85,8 @@ export default {
     },
 
     DATA_UPDATE: (state, item) => {
-      let index = state.data.findIndex(organization => organization.id == item.id)
-      if (index != -1) {
+      const index = state.data.findIndex(organization => organization.id === item.id)
+      if (index !== -1) {
         state.data[index].name = item.name
         state.data[index].org_type = item.org_type
         state.data[index].inn = item.inn
@@ -95,8 +95,8 @@ export default {
     },
 
     DATA_DELETE: (state, item) => {
-      let index = state.data.findIndex(organization => organization.id == item.id)
-      if (index != -1) {
+      const index = state.data.findIndex(organization => organization.id === item.id)
+      if (index !== -1) {
         state.data.splice(index, 1)
       }
     },
@@ -117,14 +117,14 @@ export default {
       state.organization.inn = organization.inn
       state.organization.ogrn = organization.ogrn
 
-      for (let item of organization.clients) {
+      for (const item of organization.clients) {
         state.organization.clients.push({
           label: item.full_name,
           value: item.id
         })
       }
 
-      for (let item of organization.equipments) {
+      for (const item of organization.equipments) {
         state.organization.equipments.push({
           label: item.name,
           value: item.id

@@ -22,7 +22,7 @@
             label="INN *"
             hint="Taxpayer identification number (LE - 10 ch., IE - 12 ch.)"
             lazy-rules
-            :rules="[ val => !!val && ($store.state.organizations.organization.org_type == 'LE' ? val.length == 10 : val.length == 12) || 'Please enter correct value' ]"
+            :rules="[ val => !!val && (($store.state.organizations.organization.org_type == 'LE' ? val.length == 10 : val.length == 12) || !validateProperties) || 'Please enter correct value' ]"
           )
 
           q-input(
@@ -32,7 +32,7 @@
             label="OGRN *"
             hint="Main state registration number (13 ch.)"
             lazy-rules
-            :rules="[ val => !!val && val.length == 13 || 'Please enter correct value' ]"
+            :rules="[ val => !!val && (val.length == 13 || !validateProperties) || 'Please enter correct value' ]"
           )
 
           div
@@ -47,7 +47,8 @@ import { mapActions, mapMutations } from 'vuex'
 export default {
   data () {
     return {
-      newDialog: true
+      newDialog: true,
+      validateProperties: !!process.env.VALIDATE_ORGANIZATION_PROPERTIES
     }
   },
 

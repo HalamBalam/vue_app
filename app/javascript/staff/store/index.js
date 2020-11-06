@@ -20,7 +20,7 @@ export default new Vuex.Store({
       state.errorText = errorText
     }
   },
-  
+
   modules: {
     organizations,
     clients,

@@ -8,7 +8,7 @@
     q-btn(color="primary" unelevated label="New" @click="newClientClick")
 
     router-view
-    
+
     q-dialog(v-model="deleteDialog" persistent)
       q-card
         q-card-section.row.items-center
@@ -31,11 +31,11 @@
 </template>
 
 <script>
-import { mapState, mapActions, } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'Clients',
-  data() {
+  data () {
     return {
       columns: [
         { name: 'id', required: true, label: 'Id', align: 'right', field: 'id', sortable: true },

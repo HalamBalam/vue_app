@@ -36,9 +36,9 @@ export default {
   methods: {
     loadOrganizations () {
       this.$api.organizations.index()
-      .then(({ data }) => {
-        this.data = data
-      })
+        .then(({ data }) => {
+          this.data = data
+        })
     }
   }
 }

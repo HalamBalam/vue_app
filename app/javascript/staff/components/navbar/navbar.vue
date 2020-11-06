@@ -10,7 +10,7 @@
           q-btn(dense flat @click="logOut") Exit
 
         q-dialog(v-model="resetPasswordDialog")
-          ResetPassword(@resetPassword="resetPassword")
+          ResetPassword(@reset-password="resetPassword")
 
       template(v-else)
         q-toolbar-title Please, log in to the system
@@ -45,14 +45,14 @@ export default {
     logIn () {
       this.$api.staffs.signIn()
         .then(({ data }) => {
-          this.$emit('staffAuthorization', data)
+          this.$emit('staff-authorization', data)
         })
     },
 
     logOut () {
       this.$api.staffs.signOut()
         .then(({ status }) => {
-          if (status == 200) {
+          if (status === 200) {
             location.reload()
           }
         })
@@ -61,7 +61,7 @@ export default {
     newStaff () {
       this.$api.staffs.signUp()
         .then(({ data }) => {
-          this.$emit('staffAuthorization', data)
+          this.$emit('staff-authorization', data)
         })
     },
 
@@ -71,7 +71,7 @@ export default {
 
     resetPassword (newPassword) {
       this.$api.staffs.resetPassword(newPassword)
-        .then(() => this.resetPasswordDialog = false)
+        .then(() => (this.resetPasswordDialog = false))
     }
   },
 

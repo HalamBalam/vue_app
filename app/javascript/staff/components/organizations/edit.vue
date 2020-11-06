@@ -22,7 +22,7 @@
             label="INN *"
             hint="Taxpayer identification number (LE - 10 ch., IE - 12 ch.)"
             lazy-rules
-            :rules="[ val => !!val && ($store.state.organizations.organization.org_type == 'LE' ? val.length == 10 : val.length == 12) || 'Please enter correct value' ]"
+            :rules="[ val => !!val && (($store.state.organizations.organization.org_type == 'LE' ? val.length == 10 : val.length == 12) || !validateProperties) || 'Please enter correct value' ]"
           )
 
           q-input(
@@ -32,7 +32,7 @@
             label="OGRN *"
             hint="Main state registration number (13 ch.)"
             lazy-rules
-            :rules="[ val => !!val && val.length == 13 || 'Please enter correct value' ]"
+            :rules="[ val => !!val && (val.length == 13 || !validateProperties) || 'Please enter correct value' ]"
           )
 
           q-select(
@@ -70,7 +70,8 @@ export default {
     return {
       editDialog: true,
       clients: [],
-      equipments: []
+      equipments: [],
+      validateProperties: !!process.env.VALIDATE_ORGANIZATION_PROPERTIES
     }
   },
 
@@ -114,7 +115,7 @@ export default {
     loadClients () {
       this.$api.clients.index()
         .then(({ data }) => {
-          for (let item of data) {
+          for (const item of data) {
             this.clients.push({
               label: item.full_name,
               value: item.id
@@ -126,7 +127,7 @@ export default {
     loadEquipments () {
       this.$api.equipments.index()
         .then(({ data }) => {
-          for (let item of data) {
+          for (const item of data) {
             this.equipments.push({
               label: item.name,
               value: item.id
@@ -134,7 +135,7 @@ export default {
           }
         })
     },
-    
+
     pushToOrganizations () {
       this.$router.push({ name: 'organizations' })
     }

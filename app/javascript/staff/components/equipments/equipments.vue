@@ -31,11 +31,11 @@
 </template>
 
 <script>
-import { mapState, mapActions, } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'Equipments',
-  data() {
+  data () {
     return {
       columns: [
         { name: 'id', required: true, label: 'Id', align: 'right', field: 'id', sortable: true },
@@ -59,7 +59,7 @@ export default {
   created () {
     this.fetch()
   },
-  
+
   methods: {
     ...mapActions({
       fetch: 'equipments/fetch',

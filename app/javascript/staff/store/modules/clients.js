@@ -35,7 +35,7 @@ export default {
 
     update: (context, id) => {
       context.commit('SET_VALUES_IN_LISTS')
-      
+
       Vue.prototype.$api.clients.update(id, context.state.client)
         .then((response) => {
           context.dispatch('fetch')
@@ -70,7 +70,7 @@ export default {
       state.client.phone = client.phone
       state.client.email = client.email
 
-      for (let item of client.organizations) {
+      for (const item of client.organizations) {
         state.client.organizations.push({
           label: item.name,
           value: item.id
@@ -84,7 +84,7 @@ export default {
 
     CLEAR_ORGANIZATIONS: (state) => {
       state.client.organizations = []
-    },
+    }
   },
 
   namespaced: true

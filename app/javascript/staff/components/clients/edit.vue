@@ -35,7 +35,7 @@
           )
 
           q-dialog(v-model="resetPasswordDialog")
-            ResetPassword(@resetPassword="resetPassword")
+            ResetPassword(@reset-password="resetPassword")
 
           q-select(
             filled
@@ -67,7 +67,7 @@ export default {
       organizations: []
     }
   },
- 
+
   computed: {
     id () {
       return this.$route.params.id
@@ -103,14 +103,14 @@ export default {
     },
 
     validEmail (email) {
-      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(email);
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      return re.test(email)
     },
 
     loadOrganizations () {
       this.$api.organizations.index()
         .then(({ data }) => {
-          for (let item of data) {
+          for (const item of data) {
             this.organizations.push({
               label: item.name,
               value: item.id
@@ -129,7 +129,7 @@ export default {
 
     resetPassword (newPassword) {
       this.$api.clients.resetPassword(this.id, newPassword)
-        .then(() => this.resetPasswordDialog = false)
+        .then(() => (this.resetPasswordDialog = false))
     }
   },
 

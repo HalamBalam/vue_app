@@ -52,7 +52,7 @@ export default {
       this.$refs.passwordConfirmation.validate()
 
       if (!this.$refs.password.hasError && !this.$refs.passwordConfirmation.hasError) {
-        this.$emit("resetPassword", this.password)
+        this.$emit('reset-password', this.password)
       }
     }
   }

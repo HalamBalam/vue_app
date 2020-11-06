@@ -44,7 +44,7 @@ import { mapState, mapActions, mapMutations } from 'vuex'
 
 export default {
   name: 'Organizations',
-  data() {
+  data () {
     return {
       loading: false,
       columns: [
@@ -62,9 +62,9 @@ export default {
 
   channels: {
     OrganizationsChannel: {
-      connected() {},
-      rejected() {},
-      received(data) {
+      connected () {},
+      rejected () {},
+      received (data) {
         if (data.created) {
           this.DATA_ADD(data.created)
         }
@@ -77,7 +77,7 @@ export default {
           this.DATA_DELETE(data.destroyed)
         }
       },
-      disconnected() {}
+      disconnected () {}
     }
   },
 
@@ -99,7 +99,7 @@ export default {
       channel: 'OrganizationsChannel'
     })
   },
-  
+
   methods: {
     ...mapActions({
       getRowsNumberCount: 'organizations/getRowsNumberCount',

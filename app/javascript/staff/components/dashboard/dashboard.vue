@@ -29,7 +29,7 @@
 import Clients from '../clients/clients.vue'
 import Organizations from '../organizations/organizations.vue'
 
-  const menuList = [
+const menuList = [
   {
     icon: 'people',
     label: 'Clients',
@@ -62,13 +62,13 @@ export default {
   props: ['rawHtml', 'userSignedIn'],
 
   created () {
-    this.currentMenuItem = this.menuList.findIndex(item => item.route == this.$route.name)
+    this.currentMenuItem = this.menuList.findIndex(item => item.route === this.$route.name)
   },
 
   methods: {
     menuItemClick (menuItem, index) {
       this.currentMenuItem = index
-      if (this.$route.name != menuItem.route) {
+      if (this.$route.name !== menuItem.route) {
         this.$router.push({ name: menuItem.route })
       }
     }

@@ -5,9 +5,9 @@ import { Notify } from 'quasar'
 const token = document.head.querySelector('meta[name="csrf-token"]').content
 
 const adapter = axios.create({
-  baseURL: '/',
+  baseURL: process.env.API_BASE_URL,
   headers: {
-    'Accept': 'application/json',
+    Accept: 'application/json',
     'X-CSRF-TOKEN': token
   }
 })
@@ -50,29 +50,29 @@ const api = {
 }
 
 axios.interceptors.response.use(function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    if (response.config.method == 'post') {
-      Notify.create({
-        icon: 'done',
-        color: 'positive',
-        message: 'Created'
-      })
-    }
+  // Any status code that lie within the range of 2xx cause this function to trigger
+  // Do something with response data
+  if (response.config.method === 'post') {
+    Notify.create({
+      icon: 'done',
+      color: 'positive',
+      message: 'Created'
+    })
+  }
 
-    if (response.config.method == 'put') {
-      Notify.create({
-        icon: 'done',
-        color: 'positive',
-        message: 'Updated'
-      })
-    }
+  if (response.config.method === 'put') {
+    Notify.create({
+      icon: 'done',
+      color: 'positive',
+      message: 'Updated'
+    })
+  }
 
-    return response;
-  }, function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
-  });
+  return response
+}, function (error) {
+  // Any status codes that falls outside the range of 2xx cause this function to trigger
+  // Do something with response error
+  return Promise.reject(error)
+})
 
 Vue.prototype.$api = api

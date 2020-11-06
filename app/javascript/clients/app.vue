@@ -7,7 +7,7 @@
     template(v-else)
       q-layout(view="hHh lpr fff")
 
-        navbar(:user="currentClient || ''", :userSignedIn="!!currentClient" v-on:clientAuthorization="clientAuthorization")
+        navbar(:user="currentClient || ''", :userSignedIn="!!currentClient" v-on:client-authorization="clientAuthorization")
 
         dashboard(:rawHtml="rawHtml", :userSignedIn="!!currentClient")
 
@@ -41,11 +41,11 @@ export default {
       this.loading = true
 
       this.$api.clients.current()
-      .then(({ data }) => {
-        this.currentClient = data
-      })
-      .catch(() => (this.error = true))
-      .finally(() => this.loading = false)
+        .then(({ data }) => {
+          this.currentClient = data
+        })
+        .catch(() => (this.error = true))
+        .finally(() => (this.loading = false))
     },
 
     clientAuthorization (data) {

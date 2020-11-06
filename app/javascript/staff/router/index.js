@@ -19,21 +19,30 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
     { path: '/', redirect: '/staffs' },
-    { path: '/staffs/clients', component: Clients, name: 'clients',
+    {
+      path: '/staffs/clients',
+      component: Clients,
+      name: 'clients',
       children: [
         { path: '/staffs/clients/new', component: NewClient, name: 'new_client' },
         { path: '/staffs/clients/:id', component: EditClient, name: 'edit_client' }
       ]
     },
 
-    { path: '/staffs/organizations', component: Organizations, name: 'organizations',
+    {
+      path: '/staffs/organizations',
+      component: Organizations,
+      name: 'organizations',
       children: [
         { path: '/staffs/organizations/new', component: NewOrganization, name: 'new_organization' },
         { path: '/staffs/organizations/:id', component: EditOrganization, name: 'edit_organization' }
       ]
     },
 
-    { path: '/staffs/equipments', component: Equipments, name: 'equipments',
+    {
+      path: '/staffs/equipments',
+      component: Equipments,
+      name: 'equipments',
       children: [
         { path: '/staffs/equipments/new', component: NewEquipment, name: 'new_equipment' },
         { path: '/staffs/equipments/:id', component: EditEquipment, name: 'edit_equipment' }

@@ -7,7 +7,7 @@
     template(v-else)
       q-layout(view="hHh lpr fff")
 
-        navbar(:user="currentStaff || ''", :userSignedIn="!!currentStaff" v-on:staffAuthorization="staffAuthorization")
+        navbar(:user="currentStaff || ''", :userSignedIn="!!currentStaff" v-on:staff-authorization="staffAuthorization")
 
         dashboard(:rawHtml="rawHtml", :userSignedIn="!!currentStaff")
 
@@ -39,11 +39,11 @@ export default {
       this.loading = true
 
       this.$api.staffs.current()
-      .then(({ data }) => {
-        this.currentStaff = data
-      })
-      .catch(() => (this.error = true))
-      .finally(() => this.loading = false)
+        .then(({ data }) => {
+          this.currentStaff = data
+        })
+        .catch(() => (this.error = true))
+        .finally(() => (this.loading = false))
     },
     staffAuthorization (data) {
       this.rawHtml = data
